@@ -12,7 +12,7 @@ import ru.code4a.quarkus.transactional.rw.processor.NewReadTransactionalRWProces
 class HibernateNewReadTransactionalRWProcessor(
   private val entityManager: EntityManager
 ) : NewReadTransactionalRWProcessor {
-  override val priority: Long = 1_000_000
+  override val priority: Long = 1_001_000
 
   override fun <T> with(block: () -> T): T {
     val session = entityManager.unwrap(Session::class.java)

@@ -55,8 +55,8 @@ Once the library is added to your project and the desired processors are enabled
 
 The processors in this library have the following priorities:
 
-- `HibernateNewReadTransactionalRWProcessor`: 1,000,000
-- `SerializableNewReadTransactionalRWProcessor`: 1,001,000
+- `HibernateNewReadTransactionalRWProcessor`: 1,001,000
+- `SerializableNewReadTransactionalRWProcessor`: 1,000,000
 
 These high priority values ensure that these processors are executed after any custom processors you might have implemented with lower priorities.
 
