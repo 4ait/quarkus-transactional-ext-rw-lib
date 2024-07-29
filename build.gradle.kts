@@ -6,7 +6,7 @@ version = file("version").readText().trim()
 plugins {
   kotlin("jvm") version "2.0.0"
 
-  id("org.kordamp.gradle.jandex") version "1.0.0"
+  id("org.kordamp.gradle.jandex") version "2.0.0"
 
   `java-library`
   `maven-publish`

@@ -1,5 +1,6 @@
 package ru.code4a.quarkus.transactional.rw.ext
 
+import io.quarkus.arc.properties.IfBuildProperty
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.persistence.EntityManager
 import org.hibernate.FlushMode
@@ -7,6 +8,7 @@ import org.hibernate.Session
 import ru.code4a.quarkus.transactional.rw.processor.NewReadTransactionalRWProcessor
 
 @ApplicationScoped
+@IfBuildProperty(name = "ru.code4a.transactional-rw.hibernate.enabled", stringValue = "true")
 class HibernateNewReadTransactionalRWProcessor(
   private val entityManager: EntityManager
 ) : NewReadTransactionalRWProcessor {
