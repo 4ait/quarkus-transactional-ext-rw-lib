@@ -3,6 +3,7 @@ package ru.code4a.quarkus.transactional.rw.ext
 import jakarta.persistence.OptimisticLockException
 import jakarta.persistence.PessimisticLockException
 import org.hibernate.exception.LockAcquisitionException
+import org.postgresql.util.PSQLException
 
 object TransactionUtils {
 
@@ -14,6 +15,13 @@ object TransactionUtils {
         is LockAcquisitionException,     // org.hibernate.exception
         is PessimisticLockException -> return true  // jakarta.persistence
         is org.hibernate.PessimisticLockException -> return true
+      }
+
+      if (cause is PSQLException) {
+        when (cause.sqlState) {
+          "40001", // serialization_failure
+          "40P01" -> return true  // deadlock_detected
+        }
       }
 
       cause.message?.let { message ->
