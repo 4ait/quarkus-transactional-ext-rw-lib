@@ -90,8 +90,9 @@ dependencies {
   implementation("io.quarkus:quarkus-arc:3.12.3")
   implementation("io.quarkus:quarkus-narayana-jta:3.12.3")
 
-  compileOnly("ru.code4a:quarkus-transactional-rw-lib:0.1.0")
+  compileOnly("ru.code4a:quarkus-transactional-rw-lib:0.4.0")
   compileOnly("io.quarkus:quarkus-hibernate-orm:3.12.3")
+  compileOnly("org.eclipse.microprofile.config:microprofile-config-api:3.1")
 }
 
 tasks.named("compileTestKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask::class.java) {
