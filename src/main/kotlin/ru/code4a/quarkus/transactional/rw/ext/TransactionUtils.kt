@@ -8,12 +8,13 @@ import org.postgresql.util.PSQLException
 object TransactionUtils {
 
   fun isSerializationError(e: Throwable): Boolean {
-    var cause: Throwable? = e
-    while (cause != null) {
+    fun checkCause(cause: Throwable?): Boolean {
+      if (cause == null) return false
+
       when (cause) {
-        is OptimisticLockException,      // jakarta.persistence
-        is LockAcquisitionException,     // org.hibernate.exception
-        is PessimisticLockException -> return true  // jakarta.persistence
+        is OptimisticLockException,
+        is LockAcquisitionException,
+        is PessimisticLockException,
         is org.hibernate.PessimisticLockException -> return true
       }
 
@@ -34,9 +35,14 @@ object TransactionUtils {
         }
       }
 
-      cause = cause.cause
+      for (suppressed in cause.suppressed) {
+        if (checkCause(suppressed)) return true
+      }
+
+      return checkCause(cause.cause)
     }
-    return false
+
+    return checkCause(e)
   }
 
   fun <T> executeSerializableWithRetry(
