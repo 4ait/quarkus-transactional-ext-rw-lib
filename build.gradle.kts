@@ -90,7 +90,7 @@ dependencies {
   implementation("io.quarkus:quarkus-arc:3.17.3")
   implementation("io.quarkus:quarkus-narayana-jta:3.17.3")
 
-  compileOnly("ru.code4a:quarkus-transactional-rw-lib:0.4.1")
+  compileOnly("ru.code4a:quarkus-transactional-rw-lib:0.4.0")
   compileOnly("io.quarkus:quarkus-hibernate-orm:3.12.3")
   compileOnly("org.eclipse.microprofile.config:microprofile-config-api:3.1")
   compileOnly("org.postgresql:postgresql:42.7.2")
