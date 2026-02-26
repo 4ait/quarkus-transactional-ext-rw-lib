@@ -4,7 +4,7 @@ group = "ru.code4a"
 version = file("version").readText().trim()
 
 plugins {
-  kotlin("jvm") version "2.0.0"
+  kotlin("jvm") version "2.3.0"
 
   id("org.kordamp.gradle.jandex") version "2.0.0"
 
@@ -87,11 +87,13 @@ tasks.withType<Test> {
 }
 
 dependencies {
-  implementation("io.quarkus:quarkus-arc:3.17.3")
-  implementation("io.quarkus:quarkus-narayana-jta:3.17.3")
+  val quarkusVersion = "3.31.4"
+
+  implementation("io.quarkus:quarkus-arc:${quarkusVersion}")
+  implementation("io.quarkus:quarkus-narayana-jta:${quarkusVersion}")
 
   compileOnly("ru.code4a:quarkus-transactional-rw-lib:0.4.0")
-  compileOnly("io.quarkus:quarkus-hibernate-orm:3.12.3")
+  compileOnly("io.quarkus:quarkus-hibernate-orm:${quarkusVersion}")
   compileOnly("org.eclipse.microprofile.config:microprofile-config-api:3.1")
   compileOnly("org.postgresql:postgresql:42.7.2")
 }

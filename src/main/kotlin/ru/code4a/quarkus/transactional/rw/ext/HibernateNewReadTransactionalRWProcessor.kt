@@ -12,12 +12,23 @@ import ru.code4a.quarkus.transactional.rw.processor.NewReadTransactionalRWProces
 class HibernateNewReadTransactionalRWProcessor(
   private val entityManager: EntityManager
 ) : NewReadTransactionalRWProcessor {
+  private val enabledDefaultReadOnly: Boolean
+
+  init {
+    val hibernateVersion = org.hibernate.Version.getVersionString()
+
+    // NPE bug in Hibernate >= 7.0.0 and <= 7.2.4
+    enabledDefaultReadOnly = hibernateVersion.startsWith("7.") == false
+  }
+
   override val priority: Long = 1_001_000
 
   override fun <T> with(block: () -> T): T {
     val session = entityManager.unwrap(Session::class.java)
 
-    session.isDefaultReadOnly = true
+    if(enabledDefaultReadOnly) {
+      session.isDefaultReadOnly = true
+    }
     /*
      * The {@link Session} is only flushed when {@link Session#flush()}
      * is called explicitly. This mode is very efficient for read-only
