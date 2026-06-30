@@ -5,7 +5,7 @@ This library provides additional extensions for the Quarkus Transactional Read-W
 ## Features
 
 - Hibernate-specific read-only transaction optimization
-- Serializable isolation level support for read-only transactions
+- Serializable isolation level support for read-only and write transactions
 - Seamless integration with the base Quarkus Transactional Read-Write Library
 
 ## Installation
@@ -41,7 +41,11 @@ ru.code4a.transactional-rw.hibernate.enabled=true
 
 The `SerializableNewReadTransactionalRWProcessor` sets the transaction isolation level to SERIALIZABLE for read-only transactions, providing the highest level of isolation.
 
-To enable this processor, set the following property in your `application.properties`:
+### 3. Serializable Write Transaction Processor
+
+The `SerializableNewWriteTransactionalRWProcessor` sets the transaction isolation level to SERIALIZABLE for write transactions.
+
+To enable these processors, set the following property in your `application.properties`:
 
 ```properties
 ru.code4a.transactional-rw.serializable.enabled=true
@@ -57,6 +61,7 @@ The processors in this library have the following priorities:
 
 - `HibernateNewReadTransactionalRWProcessor`: 1,001,000
 - `SerializableNewReadTransactionalRWProcessor`: 1,000,000
+- `SerializableNewWriteTransactionalRWProcessor`: 1,000,000
 
 These high priority values ensure that these processors are executed after any custom processors you might have implemented with lower priorities.
 
@@ -74,7 +79,7 @@ Set the value to `true` to enable the respective processor, or `false` to disabl
 ## Best Practices
 
 1. Enable the Hibernate processor for applications using Hibernate ORM to optimize read-only transaction performance.
-2. Use the Serializable processor when you need the highest level of isolation for your read-only transactions, but be aware of the potential performance impact.
+2. Use the Serializable processors when you need the highest level of isolation for read-only and write transactions, but be aware of the potential performance impact.
 3. Be mindful of the processor priorities when implementing custom processors to ensure proper execution order.
 
 ## Integration with Base Library
