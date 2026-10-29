@@ -187,3 +187,7 @@ nbdist/
 
 ### IDEA ###
 /.idea/
+
+# Kotlin compiler state and the unpublished test application
+.kotlin/
+integration-tests/build/

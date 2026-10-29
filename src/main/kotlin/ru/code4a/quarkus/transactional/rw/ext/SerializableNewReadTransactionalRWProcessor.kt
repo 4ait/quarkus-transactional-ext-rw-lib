@@ -3,6 +3,7 @@ package ru.code4a.quarkus.transactional.rw.ext
 import io.quarkus.arc.properties.IfBuildProperty
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.persistence.EntityManager
+import java.sql.Connection
 import ru.code4a.quarkus.transactional.rw.processor.NewReadTransactionalRWProcessor
 
 @ApplicationScoped
@@ -13,9 +14,15 @@ class SerializableNewReadTransactionalRWProcessor(
   override val priority: Long = 1_000_000
 
   override fun <T> with(block: () -> T): T {
-    entityManager
-      .createNativeQuery("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ ONLY DEFERRABLE")
-      .executeUpdate()
+    // SET only changes transaction characteristics. Native DML execution would
+    // additionally invalidate Hibernate caches for unrelated tables.
+    entityManager.runWithConnection<Connection> { connection ->
+      connection.createStatement().use { statement ->
+        statement.execute(
+          "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ ONLY DEFERRABLE"
+        )
+      }
+    }
 
     return block()
   }

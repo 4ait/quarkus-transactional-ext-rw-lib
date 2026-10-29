@@ -4,13 +4,17 @@ group = "ru.code4a"
 version = file("version").readText().trim()
 
 plugins {
-  kotlin("jvm") version "2.3.0"
+  kotlin("jvm")
 
-  id("org.kordamp.gradle.jandex") version "2.0.0"
+  id("org.kordamp.gradle.jandex")
 
   `java-library`
   `maven-publish`
-  id("org.jreleaser") version "1.13.1"
+  id("org.jreleaser")
+}
+
+kotlin {
+  jvmToolchain(25)
 }
 
 java {
@@ -84,18 +88,32 @@ repositories {
 tasks.withType<Test> {
   useJUnitPlatform()
   dependsOn(tasks["jandex"])
+  testLogging {
+    events("passed", "skipped", "failed")
+    exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+  }
 }
 
 dependencies {
-  val quarkusVersion = "3.31.4"
+  val quarkusVersion = providers.gradleProperty("quarkusVersion").get()
+  val transactionalRwVersion = providers.gradleProperty("transactionalRwVersion").get()
+  val postgresqlVersion = providers.gradleProperty("postgresqlVersion").get()
+  val microprofileConfigVersion = providers.gradleProperty("microprofileConfigVersion").get()
 
-  implementation("io.quarkus:quarkus-arc:${quarkusVersion}")
-  implementation("io.quarkus:quarkus-narayana-jta:${quarkusVersion}")
+  // A published library must allow its consumer to select a compatible Quarkus platform.
+  implementation(platform("io.quarkus.platform:quarkus-bom:$quarkusVersion"))
+  implementation("io.quarkus:quarkus-arc")
+  implementation("io.quarkus:quarkus-narayana-jta")
 
-  compileOnly("ru.code4a:quarkus-transactional-rw-lib:0.4.0")
-  compileOnly("io.quarkus:quarkus-hibernate-orm:${quarkusVersion}")
-  compileOnly("org.eclipse.microprofile.config:microprofile-config-api:3.1")
-  compileOnly("org.postgresql:postgresql:42.7.2")
+  compileOnly("ru.code4a:quarkus-transactional-rw-lib:$transactionalRwVersion")
+  compileOnly("io.quarkus:quarkus-hibernate-orm")
+  compileOnly("org.eclipse.microprofile.config:microprofile-config-api:$microprofileConfigVersion")
+  compileOnly("org.postgresql:postgresql:$postgresqlVersion")
+
+  testImplementation("org.junit.jupiter:junit-jupiter")
+  testImplementation("org.hibernate.orm:hibernate-core")
+  testImplementation("org.postgresql:postgresql:$postgresqlVersion")
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.named("compileTestKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask::class.java) {
