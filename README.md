@@ -22,6 +22,9 @@ Add the following dependency to your project:
 
 Replace `[VERSION]` with the latest version of the library.
 
+The library is a Quarkus extension. Quarkus resolves its build-time artifact,
+`quarkus-transactional-ext-rw-lib-deployment`, automatically, so only the dependency above is needed.
+
 ## Extensions
 
 ### 1. Hibernate Read-Only Transaction Processor
@@ -36,6 +39,14 @@ To enable this processor, set the following property in your `application.proper
 ```properties
 ru.code4a.transactional-rw.hibernate.enabled=true
 ```
+
+Whether the session can be read-only depends on the Hibernate ORM version of the application, so
+it is decided once when the application is built. Hibernate ORM 7.1.10–7.1.20, 7.2.0–7.2.8 and
+7.3.0 fail with `NullPointerException: Cannot read the array length because "loadedState" is null`
+when a query meets an already initialized read-only entity enhanced for lazy loading
+([HHH-20251](https://hibernate.atlassian.net/browse/HHH-20251)). With these versions, and with the
+whole 7.0 line, read transactions keep read-write sessions and the build logs a warning. The fix
+is released in 7.1.21, 7.2.9, 7.3.1 and 7.4.0.CR1; MANUAL flush mode is applied with any version.
 
 ### 2. Serializable Read-Only Transaction Processor
 

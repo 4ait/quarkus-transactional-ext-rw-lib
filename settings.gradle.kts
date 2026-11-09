@@ -13,4 +13,7 @@ pluginManagement {
 }
 
 rootProject.name = "quarkus-transactional-ext-rw-lib"
+// The project name forms the coordinates that quarkus-extension.properties points to.
+include("quarkus-transactional-ext-rw-lib-deployment")
+project(":quarkus-transactional-ext-rw-lib-deployment").projectDir = file("deployment")
 include("integration-tests")
